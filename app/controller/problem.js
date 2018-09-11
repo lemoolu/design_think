@@ -3,6 +3,7 @@
 const Controller = require('egg').Controller;
 
 class ProblemController extends Controller {
+
   async index() {
     const { ctx } = this;
     // this.ctx.body = 'hi, problem';

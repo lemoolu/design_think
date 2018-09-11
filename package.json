@@ -4,15 +4,11 @@
   "description": "",
   "private": true,
   "dependencies": {
-    "easywebpack-react": "^4.2.0",
     "egg": "^2.2.1",
     "egg-scripts": "^2.5.0",
+    "egg-security": "^2.4.0",
     "egg-view": "^2.1.0",
-    "egg-view-ejs": "^2.0.0",
-    "egg-view-react": "^1.1.0",
-    "egg-view-react-ssr": "^2.3.1",
-    "egg-webpack": "^4.1.2",
-    "egg-webpack-react": "^2.0.2"
+    "egg-view-ejs": "^2.0.0"
   },
   "devDependencies": {
     "autod": "^3.0.1",
