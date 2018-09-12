@@ -6,10 +6,14 @@ class AuthController extends Controller {
 
   async logIn() {
     this.ctx.body = '登陆';
+    // ctx.cookies.set('count', ++count);
   }
 
   async signUp() {
-    this.ctx.body = '注册';
+    const { ctx } = this;
+    const data = ctx.request.body;
+    const res = await ctx.service.user.insert(data);
+    this.ctx.body = await ctx.service.user.get(res.insertId);
   }
 
   async logOut() {

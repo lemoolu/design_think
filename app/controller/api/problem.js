@@ -16,7 +16,7 @@ class ApiProblemController extends Controller {
    * post /api/problem 问题创建
    */
   async create() {
-    const ctx = this.ctx;
+    const { ctx } = this;
     ctx.body = 'create';
     ctx.status = 200;
   }
@@ -25,7 +25,7 @@ class ApiProblemController extends Controller {
    * get /api/problem/:id 问题详情
    */
   async show() {
-    const ctx = this.ctx;
+    const { ctx } = this;
     const userId = ctx.params.id;
     ctx.body = await ctx.service.problem.find(userId);
   }

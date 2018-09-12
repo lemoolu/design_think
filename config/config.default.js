@@ -32,6 +32,32 @@ module.exports = appInfo => {
       match: '/api',
     },
 
+    session: {
+      maxAge: 24 * 3600 * 1000, // ms
+      key: 'EGG_SESS',
+      httpOnly: true,
+      encrypt: true,
+    },
+
+    multipart: {
+      whitelist: ['.png', '.jpg', '.jpeg'], // 覆盖整个白名单，只允许上传 '.png' 格式
+    },
+
+
+    mysql: {
+      client: {
+        // host: '127.0.0.1',
+        host: '10.242.109.75',
+        port: '3306',
+        user: 'root',
+        password: '123456',
+        database: 'design',
+      },
+      app: true,
+      // load into agent, default is close
+      agent: false,
+    },
+
   };
 
   return config;
