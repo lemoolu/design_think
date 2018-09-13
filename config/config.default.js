@@ -21,6 +21,7 @@ module.exports = appInfo => {
       dir: path.join(appInfo.baseDir, 'logs'),
     },
     security: {
+      domainWhiteList: ['.127.0.0.1'], // 安全白名单，以 . 开头
       csrf: {
         enable: false,
       },
@@ -67,7 +68,6 @@ module.exports = appInfo => {
       password: '123456',
       operatorsAliases: false
     },
-
   };
 
   return config;

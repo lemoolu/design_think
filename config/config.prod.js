@@ -17,6 +17,14 @@ module.exports = appInfo => {
       },
     },
 
+    security: {
+      domainWhiteList: ['.127.0.0.1'], // TODO 安全白名单，以 . 开头
+      csrf: {
+        enable: true,
+      },
+    },
+
+
     // mysql: {
     //   client: {
     //     host: '10.242.109.75',

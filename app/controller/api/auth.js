@@ -4,9 +4,10 @@ const Controller = require('egg').Controller;
 
 class AuthController extends Controller {
 
+  // 登录
   async logIn() {
     const data = this.ctx.request.body;
-    let user = await this.ctx.model.User.findOne({
+    const user = await this.ctx.model.User.findOne({
       where: { phone: data.phone, password: data.password }
     });
 
@@ -15,11 +16,11 @@ class AuthController extends Controller {
       this.ctx.session = null;
     } else {
       this.ctx.session.id = user.id;
-      this.ctx.body = { aa: '登陆成功' };
+      this.ctx.body = '登陆成功';
     }
-    // ctx.cookies.set('count', ++count);
   }
 
+  // 注册
   async signUp() {
     const { ctx } = this;
     const data = ctx.request.body;
@@ -27,11 +28,13 @@ class AuthController extends Controller {
     this.ctx.body = res.dataValues;
   }
 
+  // 退出
   async logOut() {
-    this.ctx.body = '推出';
+    this.ctx.session = null;
+    this.ctx.redirect('/')
   }
 
-
+  // 获取当前登陆用户信息
   async info() {
     const userId = this.ctx.session.id;
     const user = await this.ctx.model.User.findById(userId);
