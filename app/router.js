@@ -16,6 +16,7 @@ module.exports = app => {
   router.post('/api/log/in', api.auth.logIn);
   router.post('/api/sign/up', api.auth.signUp);
   router.get('/api/log/out', api.auth.logOut);
+  router.get('/api/auth/info', api.auth.info);
 
   router.resources('problem', '/api/problem', api.problem);
 };

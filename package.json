@@ -8,11 +8,13 @@
     "egg-mysql": "^3.0.0",
     "egg-scripts": "^2.5.0",
     "egg-security": "^2.4.0",
+    "egg-sequelize": "^4.1.0",
     "egg-session": "^3.1.0",
     "egg-validate": "^2.0.1",
     "egg-view": "^2.1.0",
     "egg-view-ejs": "^2.0.0",
-    "moment": "^2.22.2"
+    "moment": "^2.22.2",
+    "mysql2": "^1.6.1"
   },
   "devDependencies": {
     "autod": "^3.0.1",

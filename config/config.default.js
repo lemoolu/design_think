@@ -58,6 +58,16 @@ module.exports = appInfo => {
       agent: false,
     },
 
+    sequelize: {
+      dialect: 'mysql',
+      database: 'design',
+      host: '10.242.109.75',
+      port: '3306',
+      username: 'root',
+      password: '123456',
+      operatorsAliases: false
+    },
+
   };
 
   return config;

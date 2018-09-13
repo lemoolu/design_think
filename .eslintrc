@@ -1,7 +1,18 @@
 {
   "extends": "eslint-config-egg",
-  "rules":
-  {
-
+  rules: {
+    'generator-star-spacing': 'off',
+    'babel/generator-star-spacing': 'off',
+    'arrow-parens': 0,
+    'no-unused-vars': 1,
+    'object-shorthand': 0,
+    'comma-dangle': 0,
+    'no-multiple-empty-lines': 0,
+    'no-trailing-spaces': 0,
+    'space-before-function-paren': 0,
+    'array-bracket-spacing': 0,
+    'semi': 0,
+    'prefer-const': 1,
   }
 }
+
