@@ -66,7 +66,17 @@ module.exports = appInfo => {
       port: '3306',
       username: 'root',
       password: '123456',
-      operatorsAliases: false
+      operatorsAliases: false,
+      define: {
+        paranoid: true,
+        underscored: true,
+        freezeTableName: true,
+        charset: 'utf8',
+        dialectOptions: {
+          collate: 'utf8_general_ci'
+        },
+        timestamps: true
+      },
     },
   };
 
