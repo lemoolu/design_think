@@ -34,10 +34,13 @@ module.exports = app => {
   router.get('/api/auth/info', async(ctx) => {
     const userId = ctx.session.id;
     const user = await ctx.model.User.findById(userId);
+    console.log('0000')
+    console.log(user)
     if (user) {
       ctx.body = user;
     } else {
       ctx.status = 401;
+      throw new ApiError('未登录', 401);
     }
   });
 }
