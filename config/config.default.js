@@ -12,6 +12,7 @@ module.exports = appInfo => {
     view: {
       root: path.join(appInfo.baseDir, 'app/view'),
       cache: true,
+      defaultViewEngine: 'ejs',
       mapping: {
         '.ejs': 'ejs',
       },

@@ -39,8 +39,7 @@ module.exports = app => {
     if (user) {
       ctx.body = user;
     } else {
-      ctx.status = 401;
-      throw new ApiError('未登录', 401);
+      throw new ApiError('未登录', 200);
     }
   });
 }
