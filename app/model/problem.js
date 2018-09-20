@@ -17,7 +17,7 @@ module.exports = app => {
     },
     content: TEXT,
     desc: STRING,
-    owner_id: INTEGER,
+    user_id: INTEGER,
     rate: INTEGER,
     status: INTEGER,
     prototype_link: STRING,

@@ -59,7 +59,7 @@ module.exports = app => {
    */
   router.get(APIURL + '/list', async(ctx) => {
     const res = await ctx.helper.getPageData(ctx.model.Problem, ctx.query, app.Sequelize, ['title']);
-    ctx.body = res
+    ctx.body = res;
   });
 
 }

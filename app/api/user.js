@@ -14,6 +14,7 @@ module.exports = app => {
   const { router, controller } = app;
   const Op = app.Sequelize.Op
 
+  
   /**
    * 创建 { phone, password }
    */

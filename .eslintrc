@@ -1,6 +1,11 @@
 {
   "extends": "eslint-config-egg",
-  rules: {
+  "parserOptions":
+  {
+    "ecmaVersion": 2018,
+  },
+  rules:
+  {
     'generator-star-spacing': 'off',
     'babel/generator-star-spacing': 'off',
     'arrow-parens': 0,
@@ -15,4 +20,3 @@
     'prefer-const': 1,
   }
 }
-

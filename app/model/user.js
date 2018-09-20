@@ -27,6 +27,9 @@ module.exports = app => {
     created_at: DATE,
     updated_at: DATE,
     deleted_at: DATE,
+    job: STRING,
+    introduction: STRING,
+    ability_value: INTEGER,
   }, {
     indexes: [
       { unique: true, fields: ['phone'] }
