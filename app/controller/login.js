@@ -8,6 +8,21 @@ class LoginController extends Controller {
   async signUp() {
     const ctx = this.ctx;
     const data = ctx.request.body;
+    ctx.validate({
+      phone: { required: true },
+      password: { required: true }
+    }, ctx.request.body);
+
+
+
+
+    if (!data.phone) {
+      throw new ApiError('请填写手机号');
+    }
+    const user = await ctx.model.User.findOne({ where: { phone: data.phone } });
+    if (user) {
+      throw new ApiError('该手机号已存在');
+    }
     const res = await ctx.model.User.tryCreate(data);
     ctx.body = res.dataValues;
   }

@@ -4,12 +4,6 @@ const path = require('path');
 
 module.exports = appInfo => {
   const config = {
-
-    logger: {
-      consoleLevel: 'DEBUG',
-      dir: path.join(appInfo.baseDir, 'logs'),
-    },
-
     cluster: {
       listen: {
         port: 8000,

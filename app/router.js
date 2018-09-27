@@ -26,7 +26,7 @@ module.exports = app => {
 
 
   // require('./api/problem.js')(app);
-  require('./api/user.js')(app);
+  // require('./api/user.js')(app);
 
   // 管理员端接口
 };
