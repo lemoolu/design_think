@@ -3,26 +3,36 @@ const ApiError = require('../ApiError.js');
 
 const Controller = require('egg').Controller;
 
+
 class LoginController extends Controller {
 
   async signUp() {
-    const ctx = this.ctx;
+    const { ctx, app } = this;
     const data = ctx.request.body;
-    ctx.validate({
-      phone: { required: true },
-      password: { required: true }
+
+    app.validate({
+      phone: {
+        required: true,
+        pattern: /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/,
+        messages: {
+          required: '请填写手机号',
+          pattern: '请填写正确格式的手机号'
+        }
+      },
+      password: {
+        required: true,
+        messages: '请填写密码',
+      }
     }, ctx.request.body);
 
+    const user = await ctx.model.User.findOne({
+      where: { phone: data.phone }
+    });
 
-
-
-    if (!data.phone) {
-      throw new ApiError('请填写手机号');
-    }
-    const user = await ctx.model.User.findOne({ where: { phone: data.phone } });
     if (user) {
       throw new ApiError('该手机号已存在');
     }
+
     const res = await ctx.model.User.tryCreate(data);
     ctx.body = res.dataValues;
   }

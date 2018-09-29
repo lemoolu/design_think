@@ -5,10 +5,25 @@ const Controller = require('egg').Controller;
 
 class ProblemController extends Controller {
   async add() {
-    const ctx = this.ctx;
+    const { ctx, app } = this;
     const data = ctx.request.body;
+
+    app.validate({
+      title: {
+        required: true,
+        messages: {
+          required: '请填写标题',
+        }
+      },
+      content: {
+        required: true,
+        messages: '请填写内容',
+      }
+    }, ctx.request.body);
+
     const res = await ctx.model.Problem.tryCreate({
-      ...data,
+      title: data.title,
+      content: data.content,
       user_id: ctx.user.id
     });
     ctx.body = res;
@@ -25,18 +40,16 @@ class ProblemController extends Controller {
       throw new ApiError('当前用户无权限操作');
     }
     ctx.body = await problem.update({
-      title: data.title,
+      title: data.title, // todo 是否可以编辑标题
       content: data.content
     });
   }
-
 
   async getById() {
     const ctx = this.ctx;
     const id = ctx.query.id;
     ctx.body = await ctx.model.Problem.findById(id);
   }
-
 
   async getList() {
     const ctx = this.ctx;
@@ -47,6 +60,7 @@ class ProblemController extends Controller {
   async del() {
     const ctx = this.ctx;
     const problem = await ctx.model.Problem.findById(ctx.query.id);
+    console.log(ctx.query.id);
     if (!problem) {
       throw new ApiError('问题不存在')
     }
