@@ -77,4 +77,7 @@ class LoginController extends Controller {
 
 }
 
+// console.log('------')
+// console.log(/^1,|,1,|,1/.test('10,23,45,23,00,21'))
+
 module.exports = LoginController;

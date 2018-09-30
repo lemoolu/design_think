@@ -25,10 +25,10 @@ module.exports = app => {
   router.get('/api/problem/list', isUserLogin, controller.problem.getList); // 获取问题列表
 
 
-  router.post('/api/problem/star'); // 用户关注问题
-  router.post('/api/problem/solution'); // 问题添加解决方案
-  router.post('/api/problem/solution/comment'); // 解决方案添加评论
-  router.post('/api/problem/solution/vote'); // 用户投票解决方案
+  router.post('/api/problem/star', isUserLogin, controller.problem.userStar); // 用户关注问题
+  router.post('/api/solution', isUserLogin, controller.solution.add); // 问题添加解决方案
+  router.post('/api/comment', isUserLogin, controller.comment.add); // 解决方案添加评论
+  router.post('/api/solution/vote', isUserLogin, controller.solution.vote); // 用户投票解决方案
 
   // require('./api/problem.js')(app);
   // require('./api/user.js')(app);

@@ -7,7 +7,7 @@ module.exports = () => {
     const userId = ctx.session.id;
     const user = await ctx.model.User.findById(userId);
     if (!user) {
-      throw new ApiError('未登录', 200);
+      throw new ApiError('未登录', 203);
     }
 
     ctx.user = user;
