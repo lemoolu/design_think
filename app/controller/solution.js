@@ -21,25 +21,45 @@ class Solution extends Controller {
     ctx.body = '解决方案添加成功';
   }
 
-  async _getVoteIdsBySolutionId(solutionId) {
-    const { ctx } = this;
-    const solution = await ctx.model.Solution.findById(solutionId);
+  async del() {
+    const ctx = this.ctx;
+    const solution = await ctx.model.Solution.findById(ctx.body.solution_id);
     if (!solution) {
-      throw new ApiError('解决方案不存在')
+      throw new ApiError('方案不存在')
     }
-
-    const starIds = solution.vote_ids || '';
-    if (starIds === '') {
-      return [];
+    if (solution.user_id !== ctx.user.id) {
+      throw new ApiError('当前用户无权限操作');
     }
-    return starIds.split(',').map(x => parseInt(x));
+    await solution.destroy();
+    ctx.body = '方案删除成功';
   }
 
-  async _setVoteIdBySolutionId(solutionId, idList) {
-    const solution = await this.ctx.model.Solution.findById(solutionId);
-    return await solution.update({
-      vote_ids: idList.join(','), // todo 是否可以编辑标题
+  // 获取解决方案列表
+  async getList() {
+    const ctx = this.ctx;
+    if (!ctx.query.problem_id) {
+      throw new ApiError('请传入问题id');
+    }
+    const problem = await ctx.model.Problem.findById(ctx.query.problem_id);
+    if (!problem) {
+      throw new ApiError('问题不存在')
+    }
+
+    let solutionList = await ctx.service.common.getPageData(ctx.model.Solution, ctx.query, {
+      withUser: true,
+      where: { problem_id: parseInt(ctx.query.problem_id) },
+      order: [
+        ['created_at', 'DESC']
+      ]
     });
+
+    // solutionList = solutionList.dataValues;
+    solutionList.list.forEach(x => {
+      console.log(x.vote_ids)
+      x.vote_count = ctx.helper.strToIds(x.vote_ids || '').filter(x => x !== '').length;
+    })
+
+    ctx.body = solutionList;
   }
 
   // 投票解决方案 post { solution_id }
@@ -49,12 +69,17 @@ class Solution extends Controller {
       throw new ApiError('请传入方案id');
     }
 
-    const idList = await this._getVoteIdsBySolutionId(ctx.request.body.solution_id);
-    if (idList.includes(ctx.user.id)) {
+    const solution = await this.ctx.model.Solution.findById(ctx.request.body.solution_id);
+    if (!solution) {
+      throw new ApiError('解决方案不存在')
+    }
+
+    if (ctx.helper.strHasId(solution.vote_ids, ctx.user.id)) {
       throw new ApiError('您已投票过该方案');
     }
-    idList.push(ctx.user.id);
-    this._setVoteIdBySolutionId(ctx.request.body.solution_id, idList);
+    await solution.update({
+      vote_ids: ctx.helper.strAddId(solution.vote_ids, ctx.user.id),
+    });
     ctx.body = '投票成功';
   }
 }

@@ -24,6 +24,7 @@ class ProblemController extends Controller {
     const res = await ctx.model.Problem.tryCreate({
       title: data.title,
       content: data.content,
+      image: data.image,
       user_id: ctx.user.id
     });
     ctx.body = res;
@@ -48,13 +49,30 @@ class ProblemController extends Controller {
   async getById() {
     const ctx = this.ctx;
     const id = ctx.query.id;
-    ctx.body = await ctx.model.Problem.findById(id);
+    let problem = await ctx.model.Problem.findById(id);
+    if (!problem) {
+      throw new ApiError('问题不存在');
+    }
+    problem = problem.dataValues;
+    problem.user_data = await ctx.model.User.findById(problem.user_id);
+    problem.star_count = ctx.helper.strToIds(problem.star_ids).length;
+    ctx.body = problem;
   }
 
   async getList() {
     const ctx = this.ctx;
-    const res = await ctx.helper.getPageData(ctx.model.Problem, ctx.query, ctx.app.Sequelize, ['title']);
-    ctx.body = res;
+    const problemList = await ctx.service.common.getPageData(ctx.model.Problem, ctx.query, {
+      searchKey: ['title'],
+      withUser: true,
+      attributes: {
+        exclude: ['content']
+      },
+      order: [
+        ['created_at', 'DESC']
+      ]
+    });
+
+    ctx.body = problemList;
   }
 
   async del() {
@@ -70,58 +88,28 @@ class ProblemController extends Controller {
     ctx.body = '问题删除成功';
   }
 
-  async _getStarIdsByProblemId(problemId) {
-    const { ctx } = this;
-    const problem = await ctx.model.Problem.findById(problemId);
-    if (!problem) {
-      throw new ApiError('问题不存在')
-    }
-
-    const starIds = problem.star_ids || '';
-    if (starIds === '') {
-      return [];
-    }
-    return starIds.split(',').map(x => parseInt(x));
-  }
-
-  async _setStarIdByProblemId(problemId, idList) {
-    const problem = await this.ctx.model.Problem.findById(problemId);
-    return await problem.update({
-      star_ids: idList.join(','), // todo 是否可以编辑标题
-    });
-  }
-
   // 用户关注问题 post { problem_id }
   async userStar() {
     const { ctx } = this;
     if (!ctx.request.body.problem_id) {
       throw new ApiError('请传入问题id');
     }
-
-    const idList = await this._getStarIdsByProblemId(ctx.request.body.problem_id);
-    if (idList.includes(ctx.user.id)) {
-      throw new ApiError('您已关注过该问题');
-    }
-    idList.push(ctx.user.id);
-    this._setStarIdByProblemId(ctx.request.body.problem_id, idList);
-    ctx.body = '问题关注成功';
-  }
-
-  // 添加解决方案
-  async addSolution() {
-    const { ctx } = this;
-    const data = Object.assign({
-      problem_id: null,
-      content: null,
-      user_id: ctx.user.id,
-    }, ctx.request.body);
-    const problem = await ctx.model.Problem.findById(data.problem_id);
+    const problem = await ctx.model.Problem.findById(ctx.request.body.problem_id);
     if (!problem) {
       throw new ApiError('问题不存在')
     }
+    if (problem.user_id === ctx.user.id) {
+      throw new ApiError('无法关注该问题，此问题属于您');
+    }
+    if (ctx.helper.strHasId(problem.star_ids, ctx.user.id)) {
+      throw new ApiError('您已关注过该问题');
+    }
 
-    await ctx.model.Solution.create(data)
-    ctx.body = '解决方案添加成功';
+    await problem.update({
+      star_ids: ctx.helper.strAddId(problem.star_ids, ctx.user.id),
+    });
+
+    ctx.body = '问题关注成功';
   }
 
 }

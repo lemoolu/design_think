@@ -26,6 +26,7 @@ module.exports = app => {
     created_at: DATE,
     updated_at: DATE,
     deleted_at: DATE,
+    image: STRING,
   }, {
     indexes: [
       { unique: true, fields: ['id'] }

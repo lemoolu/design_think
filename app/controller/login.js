@@ -75,9 +75,23 @@ class LoginController extends Controller {
     });
   }
 
-}
+  // 获取我的问题，type: create我创建的问题；star关注的问题；join我参与的问题
+  async getMyProblem() {
+    const { ctx } = this;
+    const type = ctx.query.type;
+    if (type === 'create') {
+      const list = await ctx.model.Problem.findAll({
+        where: {
+          user_id: ctx.user.id,
+        },
+        attributes: ['id', 'title']
+      });
+      ctx.body = list;
+    } else {
+      ctx.body = [];
+    }
+  }
 
-// console.log('------')
-// console.log(/^1,|,1,|,1/.test('10,23,45,23,00,21'))
+}
 
 module.exports = LoginController;
