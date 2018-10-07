@@ -55,8 +55,8 @@ class Solution extends Controller {
 
     // solutionList = solutionList.dataValues;
     solutionList.list.forEach(x => {
-      console.log(x.vote_ids)
       x.vote_count = ctx.helper.strToIds(x.vote_ids || '').filter(x => x !== '').length;
+      x.vote_ids = undefined;
     })
 
     ctx.body = solutionList;

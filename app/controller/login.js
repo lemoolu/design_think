@@ -11,6 +11,10 @@ class LoginController extends Controller {
     const data = ctx.request.body;
 
     app.validate({
+      name: {
+        required: true,
+        message: '请填写昵称'
+      },
       phone: {
         required: true,
         pattern: /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/,
@@ -24,6 +28,13 @@ class LoginController extends Controller {
         messages: '请填写密码',
       }
     }, ctx.request.body);
+
+    if (!data.name) {
+      throw new ApiError('请填写昵称');
+    }
+    if (!data.password) {
+      throw new ApiError('请填写密码');
+    }
 
     const user = await ctx.model.User.findOne({
       where: { phone: data.phone }

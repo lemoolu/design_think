@@ -1,6 +1,7 @@
 'use strict';
 const _ = require('lodash');
 const Service = require('egg').Service;
+const ApiError = require('../ApiError.js');
 
 // 分页默认参数
 const PAGE = { page: 1, pageSize: 10, search: null, };
@@ -65,6 +66,29 @@ class CommonService extends Service {
       total: await model.count(filterOptions),
       list: list
     };
+  }
+
+  async delData(model, delId, options = { isNeedOwer: true }, messages = {}) {
+    messages = Object.assign({
+      success: '删除成功',
+      fail: '删除失败',
+      notExist: '数据不存在',
+      noPermission: '当前用户无权限操作',
+    }, messages)
+    const ctx = this.ctx;
+    const data = await model.findById(delId);
+    if (!data) {
+      throw new ApiError(messages.notExist)
+    }
+
+    if (options.isNeedOwer === true) {
+      if (data.user_id !== ctx.user.id) {
+        throw new ApiError(messages.noPermission);
+      }
+    }
+
+    await data.destroy();
+    ctx.body = messages.success;
   }
 }
 

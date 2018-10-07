@@ -12,7 +12,7 @@ class Comment extends Controller {
       content: null,
       user_id: ctx.user.id,
     }, ctx.request.body);
-    
+
     const solution = await ctx.model.Solution.findById(data.solution_id);
     if (!solution) {
       throw new ApiError('解决方案不存在')
@@ -37,6 +37,11 @@ class Comment extends Controller {
     });
 
     ctx.body = data;
+  }
+
+  async del() {
+    const ctx = this.ctx;
+    await ctx.service.common.delData(ctx.model.Comment, ctx.request.body.id, { isNeedOwer: true }, {});
   }
 }
 

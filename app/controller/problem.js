@@ -65,11 +65,15 @@ class ProblemController extends Controller {
       searchKey: ['title'],
       withUser: true,
       attributes: {
-        exclude: ['content']
+        // exclude: ['content']
       },
       order: [
         ['created_at', 'DESC']
       ]
+    });
+
+    problemList.list.forEach(x => {
+      x.star_count = ctx.helper.strToIds(x.star_ids).length
     });
 
     ctx.body = problemList;
@@ -77,15 +81,7 @@ class ProblemController extends Controller {
 
   async del() {
     const ctx = this.ctx;
-    const problem = await ctx.model.Problem.findById(ctx.query.id);
-    if (!problem) {
-      throw new ApiError('问题不存在')
-    }
-    if (problem.user_id !== ctx.user.id) {
-      throw new ApiError('当前用户无权限操作');
-    }
-    await problem.destroy();
-    ctx.body = '问题删除成功';
+    await ctx.service.common.delData(ctx.model.Problem, ctx.request.body.id, { isNeedOwer: true }, {});
   }
 
   // 用户关注问题 post { problem_id }

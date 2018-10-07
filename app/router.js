@@ -33,6 +33,7 @@ module.exports = app => {
 
   router.post('/api/comment', isUserLogin, controller.comment.add); // 解决方案添加评论
   router.get('/api/comment/list', controller.comment.getList); // 解决方案添加评论
+  router.delete('/api/comment', isUserLogin, controller.comment.del); // 解决方案添加评论
 
 
   // require('./api/problem.js')(app);
