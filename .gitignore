@@ -10,6 +10,6 @@ run/
 .DS_Store
 *.sw*
 *.un~
-app/public/uploads
+app/public/uploads/*.jpg
 sql.js
 jmeter.log
