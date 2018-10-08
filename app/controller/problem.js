@@ -49,13 +49,16 @@ class ProblemController extends Controller {
   async getById() {
     const ctx = this.ctx;
     const id = ctx.query.id;
-    let problem = await ctx.model.Problem.findById(id);
-    if (!problem) {
+    let _problem = await ctx.model.Problem.findById(id);
+    if (!_problem) {
       throw new ApiError('问题不存在');
     }
-    problem = problem.dataValues;
+    const problem = _problem.dataValues;
     problem.user_data = await ctx.model.User.findById(problem.user_id);
     problem.star_count = ctx.helper.strToIds(problem.star_ids).length;
+    await _problem.update({
+      visit_count: problem.visit_count + 1
+    });
     ctx.body = problem;
   }
 

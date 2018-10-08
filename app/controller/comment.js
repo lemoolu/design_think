@@ -32,7 +32,7 @@ class Comment extends Controller {
       withUser: true,
       where: { solution_id: parseInt(ctx.query.solution_id) },
       order: [
-        ['created_at', 'DESC']
+        // ['created_at', 'DESC']
       ]
     });
 

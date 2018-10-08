@@ -49,7 +49,7 @@ class Solution extends Controller {
       withUser: true,
       where: { problem_id: parseInt(ctx.query.problem_id) },
       order: [
-        ['created_at', 'DESC']
+        // ['created_at', 'DESC']
       ]
     });
 

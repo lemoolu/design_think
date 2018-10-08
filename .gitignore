@@ -11,5 +11,7 @@ run/
 *.sw*
 *.un~
 app/public/uploads/*.jpg
+app/public/uploads/*.png
+app/public/uploads/*.jpeg
 sql.js
 jmeter.log
