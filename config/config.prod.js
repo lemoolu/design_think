@@ -12,9 +12,9 @@ module.exports = appInfo => {
     },
 
     security: {
-      domainWhiteList: ['.127.0.0.1'], // TODO 安全白名单，以 . 开头
+      domainWhiteList: ['127.0.0.1', '101.132.99.52'], // TODO 安全白名单，以 . 开头
       csrf: {
-        enable: true,
+        enable: false,
       },
     },
 
