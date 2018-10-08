@@ -90,6 +90,16 @@ class CommonService extends Service {
     await data.destroy();
     ctx.body = messages.success;
   }
+
+  // 用户关注问题
+  async relUserStarProblem() {
+
+  }
+
+  // 用户参与问题
+  async relUserJoinProblem(problemId) {
+    console.log(problemId);
+  }
 }
 
 module.exports = CommonService;

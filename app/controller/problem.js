@@ -59,6 +59,11 @@ class ProblemController extends Controller {
     await _problem.update({
       visit_count: problem.visit_count + 1
     });
+
+    await ctx.service.common.relUserJoinProblem(100);
+
+
+
     ctx.body = problem;
   }
 
