@@ -49,7 +49,7 @@ class ProblemController extends Controller {
   async getById() {
     const ctx = this.ctx;
     const id = ctx.query.id;
-    let _problem = await ctx.model.Problem.findById(id);
+    const _problem = await ctx.model.Problem.findById(id);
     if (!_problem) {
       throw new ApiError('问题不存在');
     }
@@ -59,10 +59,6 @@ class ProblemController extends Controller {
     await _problem.update({
       visit_count: problem.visit_count + 1
     });
-
-    await ctx.service.common.relUserJoinProblem(100);
-
-
 
     ctx.body = problem;
   }
@@ -108,6 +104,8 @@ class ProblemController extends Controller {
     if (ctx.helper.strHasId(problem.star_ids, ctx.user.id)) {
       throw new ApiError('您已关注过该问题');
     }
+
+    await ctx.service.common.relUserStarProblem(ctx.request.body.problem_id);
 
     await problem.update({
       star_ids: ctx.helper.strAddId(problem.star_ids, ctx.user.id),

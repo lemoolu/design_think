@@ -3,6 +3,9 @@ const _ = require('lodash');
 const Service = require('egg').Service;
 const ApiError = require('../ApiError.js');
 
+
+const statusType = { true: true, false: false, null: null };
+
 // 分页默认参数
 const PAGE = { page: 1, pageSize: 10, search: null, };
 /**
@@ -13,7 +16,14 @@ const PAGE = { page: 1, pageSize: 10, search: null, };
  * @return {[Object]}                 [数据库查询后的完整数据]
  */
 class CommonService extends Service {
-  async getPageData(model, query = {}, options = { searchKey: [], withUser: true, where: {}, order: undefined, attributes: undefined }) {
+  async getPageData(model, query = {}, options = {
+    searchKey: [], // 搜索匹配的key值
+    status: undefined, // 匹配状态 ，‘true’, 'false', 'null', true, false, null | ['true', 'null']
+    withUser: true, // 是否解析user_id 生成 user_data
+    where: {}, // 更多状态匹配
+    order: undefined, // 排序
+    attributes: undefined, // 匹配属性
+  }) {
     const ctx = this.ctx;
     const Op = this.ctx.app.Sequelize.Op;
 
@@ -38,6 +48,17 @@ class CommonService extends Service {
       });
     }
 
+    if (options.status) {
+      if (_.isString(options.status)) {
+        filterOptions.where.status = statusType[options.status];
+      }
+      if (_.isArray(options.status)) {
+        filterOptions.where.status = {
+          [Op.or]: options.status.map(x => statusType[x])
+        }
+      }
+    }
+
     if (options.where) {
       Object.assign(filterOptions.where, options.where);
     }
@@ -46,7 +67,7 @@ class CommonService extends Service {
     filterOptions.order = options.order;
 
     let list = await model.findAll(filterOptions);
-    list = list.map(x => x.dataValues);
+    list = list.map(x => x.get());
 
     if (options.withUser === true) {
       for (let i = 0; i < list.length; i++) {
@@ -92,13 +113,27 @@ class CommonService extends Service {
   }
 
   // 用户关注问题
-  async relUserStarProblem() {
-
+  async relUserStarProblem(problemId) {
+    const userId = this.ctx.session.id;
+    if (!userId) {
+      throw new ApiError('未登录', 203);
+    }
+    const rel = await this.ctx.model.RelUserProblem.findOrCreate({ where: { user_id: userId } });
+    await rel[0].update({
+      star_ids: this.ctx.helper.strAddId(rel[0].star_ids, problemId)
+    });
   }
 
   // 用户参与问题
   async relUserJoinProblem(problemId) {
-    console.log(problemId);
+    const userId = this.ctx.session.id;
+    if (!userId) {
+      throw new ApiError('未登录', 203);
+    }
+    const rel = await this.ctx.model.RelUserProblem.findOrCreate({ where: { user_id: userId } });
+    await rel[0].update({
+      join_ids: this.ctx.helper.strAddId(rel[0].join_ids, problemId)
+    });
   }
 }
 

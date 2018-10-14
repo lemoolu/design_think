@@ -45,14 +45,14 @@ class LoginController extends Controller {
     }
 
     const res = await ctx.model.User.tryCreate(data);
-    ctx.body = res.dataValues;
+    ctx.body = res.get();
   }
 
   async login() {
     const ctx = this.ctx;
     const data = ctx.request.body;
     const user = await ctx.model.User.findOne({
-      where: { phone: data.phone, password: data.password }
+      where: { phone: data.phone, password: data.password, is_admin: false }
     });
 
     if (!user) {

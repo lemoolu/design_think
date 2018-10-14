@@ -17,6 +17,8 @@ class Solution extends Controller {
       throw new ApiError('问题不存在')
     }
 
+    await ctx.service.common.relUserJoinProblem(data.problem_id);
+
     await ctx.model.Solution.create(data)
     ctx.body = '解决方案添加成功';
   }

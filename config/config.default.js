@@ -35,7 +35,7 @@ module.exports = appInfo => {
     },
 
     session: {
-      maxAge: 24 * 3600 * 1000, // ms
+      maxAge: 1 * 3600 * 1000, // ms
       key: 'EGG_SESS',
       httpOnly: true,
       encrypt: true,
@@ -54,13 +54,18 @@ module.exports = appInfo => {
       password: sql.password,
       operatorsAliases: false,
       define: {
+        // 不从数据库中删除数据，而只是增加一个 deletedAt 标识当前时间
+        // paranoid 属性只在启用 timestamps 时适用
         paranoid: true,
+        // 不使用驼峰式命令规则，这样会在使用下划线分隔
         underscored: true,
+        // 禁止修改表名. 默认情况下
         freezeTableName: true,
         charset: 'utf8',
         dialectOptions: {
           collate: 'utf8_general_ci'
         },
+        // 添加时间戳属性 (updatedAt, createdAt)
         timestamps: true
       },
     },

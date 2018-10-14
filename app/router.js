@@ -6,6 +6,7 @@
 module.exports = app => {
   const { router, controller, middleware } = app;
   const isUserLogin = middleware.isLogin();
+  const isAdminLogin = middleware.isLogin(true);
 
   // 路由配置
   router.get('/', controller.app.index);
@@ -33,8 +34,32 @@ module.exports = app => {
 
   router.post('/api/comment', isUserLogin, controller.comment.add); // 解决方案添加评论
   router.get('/api/comment/list', controller.comment.getList); // 解决方案添加评论
-  router.delete('/api/comment', isUserLogin, controller.comment.del); // 解决方案添加评论
+  router.del('/api/comment', isUserLogin, controller.comment.del); // 解决方案添加评论
 
+
+  // 管理员端接口
+  router.post('/api/admin/login', controller.admin.common.login); // 
+  router.get('/api/admin/auth/info', isAdminLogin, controller.admin.common.getInfo); // 获取登录用户信息
+  router.post('/api/admin/invitecode/gen', isAdminLogin, controller.admin.common.inviteCodeGen); // 生成邀请码
+  router.get('/api/admin/invitecode/list', isAdminLogin, controller.admin.common.inviteCodeList); // 生成邀请码
+
+  router.get('/api/admin/problem/list', isAdminLogin, controller.admin.problem.getList); // 
+  router.post('/api/admin/problem/verify', isAdminLogin, controller.admin.problem.verify); // 
+
+  router.get('/api/admin/solution/list', isAdminLogin, controller.admin.solution.getList); //  
+  router.post('/api/admin/solution/verify', isAdminLogin, controller.admin.solution.verify); //  
+
+  router.get('/api/admin/comment/list', isAdminLogin, controller.admin.comment.getList); //  
+  router.post('/api/admin/comment/verify', isAdminLogin, controller.admin.comment.verify); //  
+
+  router.get('/api/admin/user/list', isAdminLogin, controller.admin.user.getList); //  
+
+  router.post('/api/admin/upload', isAdminLogin, controller.uploader.index); // 文件上传接口
+  router.post('/api/admin/story', isAdminLogin, controller.admin.story.add); // 
+  router.get('/api/admin/story', isAdminLogin, controller.admin.story.getById); // 
+  router.get('/api/admin/story/list', isAdminLogin, controller.admin.story.getList); // 
+  router.del('/api/admin/story', isAdminLogin, controller.admin.story.del); // 
+  router.put('/api/admin/story', isAdminLogin, controller.admin.story.update); // 
 
   // require('./api/problem.js')(app);
   // require('./api/user.js')(app);

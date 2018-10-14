@@ -3,27 +3,23 @@
 const ApiError = require('../ApiError.js');
 const moment = require('moment');
 
-const statusType = { 1: true, 0: false };
-
 module.exports = app => {
   const { STRING, INTEGER, DATE, TEXT } = app.Sequelize;
 
-  const Solution = app.model.define('solutions', {
+  const Story = app.model.define('storys', {
     id: {
       type: INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    problem_id: {
-      type: INTEGER,
+    title: {
+      type: STRING,
       allowNull: false,
     },
     content: TEXT,
-    user_id: {
-      type: INTEGER,
-      allowNull: false,
-    },
-    vote_ids: TEXT,
+    visit_count: INTEGER,
+    star_ids: { type: TEXT, defaultValue: '' },
+    image: STRING,
     created_at: {
       type: DATE,
       get() {
@@ -38,27 +34,16 @@ module.exports = app => {
           moment(this.getDataValue('updated_at')).format('YYYY-MM-DD HH:mm') : '';
       }
     },
-    status: {
-      type: INTEGER,
-      get() {
-        return statusType[this.getDataValue('status')]
-      },
-      set(val) {
-        if (val === true || val === 'true') {
-          this.setDataValue('status', 1);
-        }
-        if (val === false || val === 'false') {
-          this.setDataValue('status', 0);
-        }
-      }
-    },
-    verify_msg: STRING,
+    deleted_at: DATE,
   }, {
     indexes: [
       { unique: true, fields: ['id'] }
     ],
-    paranoid: false,
   });
 
-  return Solution;
+  Story.tryCreate = async (data) => {
+    return await Story.create(data);
+  }
+
+  return Story;
 };

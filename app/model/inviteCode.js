@@ -5,24 +5,24 @@ const ApiError = require('../ApiError.js');
 module.exports = app => {
   const { STRING, INTEGER, DATE, TEXT } = app.Sequelize;
 
-  const rel = app.model.define('rel_user_problem', {
+  const rel = app.model.define('invite_code', {
     id: {
-      type: INTEGER,
+      type: STRING,
       primaryKey: true,
-      autoIncrement: true,
     },
-    user_id: {
+    create_user_id: {
       type: INTEGER,
       allowNull: false,
     },
-    star_ids: TEXT,
-    join_ids: TEXT,
-    created_at: DATE,
+    use_user_id: {
+      type: INTEGER,
+    },
   }, {
     indexes: [
       { unique: true, fields: ['id'] }
     ],
     paranoid: false,
+    timestamps: false,
   });
 
   return rel;
