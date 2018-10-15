@@ -9,6 +9,8 @@ const awaitWriteStream = require('await-stream-ready').write;
 class UploaderController extends Controller {
   async index() {
     const ctx = this.ctx;
+    console.log(ctx.request.body);
+    console.log(ctx.query);
     // egg-multipart 已经帮我们处理文件二进制对象
     // node.js 和 php 的上传唯一的不同就是 ，php 是转移一个 临时文件
     // node.js 和 其他语言（java c#） 一样操作文件流
@@ -28,10 +30,18 @@ class UploaderController extends Controller {
       await sendToWormhole(stream);
       throw err;
     }
-    // 文件响应
-    ctx.body = {
-      url: '/public/uploads/' + filename
-    };
+    if (ctx.query && ctx.query.from === 'editor') {
+      // 富文本上传
+      ctx.body = {
+        errno: 0,
+        data: ['/public/uploads/' + filename]
+      };
+      ctx.isFormatRes = false;
+    } else {
+      ctx.body = {
+        url: '/public/uploads/' + filename
+      };
+    }
   }
 }
 

@@ -77,6 +77,7 @@ class CommonService extends Service {
           id: userData.id,
           name: userData.name,
           avatar: userData.avatar,
+          created_at: userData.created_at
         };
       }
     }

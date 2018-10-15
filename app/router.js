@@ -40,6 +40,7 @@ module.exports = app => {
   // 管理员端接口
   router.post('/api/admin/login', controller.admin.common.login); // 
   router.get('/api/admin/auth/info', isAdminLogin, controller.admin.common.getInfo); // 获取登录用户信息
+  
   router.post('/api/admin/invitecode/gen', isAdminLogin, controller.admin.common.inviteCodeGen); // 生成邀请码
   router.get('/api/admin/invitecode/list', isAdminLogin, controller.admin.common.inviteCodeList); // 生成邀请码
 

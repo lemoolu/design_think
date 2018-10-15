@@ -45,7 +45,7 @@ class Ctrl extends Controller {
     for (let i = 0; i < data.count; i++) {
       let id = shortid.generate();
       res.push(id);
-      await ctx.model.InviteCode.create({ id: id, create_user_id: ctx.user.id });
+      await ctx.model.InviteCode.create({ id: id, user_id: ctx.user.id, created_at: new Date() });
     }
 
     ctx.body = res;
@@ -53,12 +53,32 @@ class Ctrl extends Controller {
 
   async inviteCodeList() {
     const ctx = this.ctx;
-    const list = await ctx.service.common.getPageData(ctx.model.Problem, ctx.query, {
-      withUser: true,
+    let isUsed = ctx.query.is_used;
+    const Op = this.ctx.app.Sequelize.Op;
+    const option = {
+      withUser: false,
       attributes: {},
-    });
+      where: {},
+      order: [
+        ['created_at', 'DESC']
+      ]
+    };
+    if (isUsed === 'true') {
+      option.where.use_user_id = { [Op.not]: null };
+    }
+    if (isUsed === 'false') {
+      option.where.use_user_id = null;
+    }
+    const data = await ctx.service.common.getPageData(ctx.model.InviteCode, ctx.query, option);
 
-    ctx.body = list;
+    for (let i = 0; i < data.list.length; i++) {
+      const item = data.list[i];
+      if (item.use_user_id) {
+        item.use_user = await ctx.model.User.findById(item.use_user_id)
+      }
+    }
+
+    ctx.body = data;
   }
 
 }

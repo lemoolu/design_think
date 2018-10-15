@@ -1,6 +1,7 @@
 'use strict';
 
 const ApiError = require('../ApiError.js');
+const moment = require('moment');
 
 module.exports = app => {
   const { STRING, INTEGER, DATE, TEXT } = app.Sequelize;
@@ -10,12 +11,19 @@ module.exports = app => {
       type: STRING,
       primaryKey: true,
     },
-    create_user_id: {
+    user_id: {
       type: INTEGER,
       allowNull: false,
     },
     use_user_id: {
       type: INTEGER,
+    },
+    created_at: {
+      type: DATE,
+      get() {
+        return this.getDataValue('created_at') ?
+          moment(this.getDataValue('created_at')).format('YYYY-MM-DD HH:mm:ss') : '';
+      },
     },
   }, {
     indexes: [
