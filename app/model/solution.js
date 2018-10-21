@@ -19,6 +19,7 @@ module.exports = app => {
       allowNull: false,
     },
     content: TEXT,
+    image: STRING,
     user_id: {
       type: INTEGER,
       allowNull: false,

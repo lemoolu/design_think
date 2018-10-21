@@ -29,6 +29,7 @@ module.exports = app => {
 
   router.post('/api/problem/star', isUserLogin, controller.problem.userStar); // 用户关注问题
   router.post('/api/solution', isUserLogin, controller.solution.add); // 问题添加解决方案
+  router.put('/api/solution', isUserLogin, controller.solution.updata); // 问题添加解决方案
   router.get('/api/solution/list', controller.solution.getList); // 解决方案列表
   router.post('/api/solution/vote', isUserLogin, controller.solution.vote); // 用户投票解决方案
 
@@ -40,7 +41,7 @@ module.exports = app => {
   // 管理员端接口
   router.post('/api/admin/login', controller.admin.common.login); // 
   router.get('/api/admin/auth/info', isAdminLogin, controller.admin.common.getInfo); // 获取登录用户信息
-  
+
   router.post('/api/admin/invitecode/gen', isAdminLogin, controller.admin.common.inviteCodeGen); // 生成邀请码
   router.get('/api/admin/invitecode/list', isAdminLogin, controller.admin.common.inviteCodeList); // 生成邀请码
 
@@ -57,8 +58,8 @@ module.exports = app => {
 
   router.post('/api/admin/upload', isAdminLogin, controller.uploader.index); // 文件上传接口
   router.post('/api/admin/story', isAdminLogin, controller.admin.story.add); // 
-  router.get('/api/admin/story', isAdminLogin, controller.admin.story.getById); // 
-  router.get('/api/admin/story/list', isAdminLogin, controller.admin.story.getList); // 
+  router.get('/api/admin/story', controller.admin.story.getById); // 
+  router.get('/api/admin/story/list', controller.admin.story.getList); // 
   router.del('/api/admin/story', isAdminLogin, controller.admin.story.del); // 
   router.put('/api/admin/story', isAdminLogin, controller.admin.story.update); // 
 

@@ -50,12 +50,13 @@ class Ctrl extends Controller {
     if (!_story) {
       throw new ApiError('故事不存在');
     }
-    const story = _story.dataValues;
+    const story = _story.get();
     story.user_data = await ctx.model.User.findById(story.user_id);
     story.star_count = ctx.helper.strToIds(story.star_ids).length;
-    // await _story.update({
-    //   visit_count: story.visit_count + 1
-    // });
+
+    await _story.update({
+      visit_count: story.visit_count + 1
+    }, { silent: true });
 
     ctx.body = story;
   }

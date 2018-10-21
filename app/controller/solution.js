@@ -23,6 +23,21 @@ class Solution extends Controller {
     ctx.body = '解决方案添加成功';
   }
 
+  async updata() {
+    const ctx = this.ctx;
+    const data = ctx.request.body;
+    const solution = await ctx.model.Solution.findById(data.id);
+    if (!solution) {
+      throw new ApiError('方案不存在');
+    }
+
+    ctx.body = await solution.update({
+      content: data.content,
+      image: data.image,
+      status: null,
+    });
+  }
+
   async del() {
     const ctx = this.ctx;
     const solution = await ctx.model.Solution.findById(ctx.body.solution_id);
@@ -55,11 +70,12 @@ class Solution extends Controller {
       ]
     });
 
-    // solutionList = solutionList.dataValues;
-    solutionList.list.forEach(x => {
+    for (let i = 0; i < solutionList.list.length; i++) {
+      let x = solutionList.list[i];
       x.vote_count = ctx.helper.strToIds(x.vote_ids || '').filter(x => x !== '').length;
+      x.comment_count = await ctx.model.Comment.count({ where: { solution_id: x.id } })
       x.vote_ids = undefined;
-    })
+    }
 
     ctx.body = solutionList;
   }

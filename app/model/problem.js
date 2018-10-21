@@ -49,10 +49,13 @@ module.exports = app => {
       set(val) {
         if (val === true || val === 'true') {
           this.setDataValue('status', 1);
+          return;
         }
         if (val === false || val === 'false') {
           this.setDataValue('status', 0);
+          return;
         }
+        this.setDataValue('status', val);
       }
     },
     verify_msg: STRING,

@@ -42,7 +42,8 @@ class ProblemController extends Controller {
     }
     ctx.body = await problem.update({
       title: data.title, // todo 是否可以编辑标题
-      content: data.content
+      content: data.content,
+      status: null,
     });
   }
 
@@ -53,12 +54,12 @@ class ProblemController extends Controller {
     if (!_problem) {
       throw new ApiError('问题不存在');
     }
-    const problem = _problem.dataValues;
+    const problem = _problem.get();
     problem.user_data = await ctx.model.User.findById(problem.user_id);
     problem.star_count = ctx.helper.strToIds(problem.star_ids).length;
     await _problem.update({
       visit_count: problem.visit_count + 1
-    });
+    }, { silent: true });
 
     ctx.body = problem;
   }

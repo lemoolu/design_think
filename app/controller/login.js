@@ -95,9 +95,32 @@ class LoginController extends Controller {
         where: {
           user_id: ctx.user.id,
         },
-        attributes: ['id', 'title']
+        order: [
+          ['updated_at', 'DESC']
+        ],
+        attributes: ['id', 'title', 'status']
       });
       ctx.body = list;
+    } else if (type === 'star' || type === 'join') {
+      const relData = await ctx.model.RelUserProblem.findOne({
+        where: { user_id: this.ctx.user.id }
+      });
+      if (relData) {
+        const key = type === 'star' ? 'star_ids' : 'join_ids';
+        const problemIds = ctx.helper.strToIds(relData.get()[key]);
+        const list = [];
+        for (let i = 0; i < problemIds.length; i++) {
+          const p = await ctx.model.Problem.findById(problemIds[i]);
+          const data = p && p.get();
+          data && list.push({
+            id: p.id,
+            title: data.title,
+          });
+        }
+        ctx.body = list;
+      } else {
+        ctx.body = [];
+      }
     } else {
       ctx.body = [];
     }
