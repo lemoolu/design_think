@@ -93,7 +93,7 @@ class Solution extends Controller {
     }
 
     if (ctx.helper.strHasId(solution.vote_ids, ctx.user.id)) {
-      throw new ApiError('您已投票过该方案');
+      throw new ApiError('请坚定你的立场哦~');
     }
     await solution.update({
       vote_ids: ctx.helper.strAddId(solution.vote_ids, ctx.user.id),
