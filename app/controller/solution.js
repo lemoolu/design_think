@@ -23,7 +23,7 @@ class Solution extends Controller {
     ctx.body = '解决方案添加成功';
   }
 
-  async updata() {
+  async update() {
     const ctx = this.ctx;
     const data = ctx.request.body;
     const solution = await ctx.model.Solution.findById(data.id);
@@ -62,8 +62,9 @@ class Solution extends Controller {
       throw new ApiError('问题不存在')
     }
 
-    let solutionList = await ctx.service.common.getPageData(ctx.model.Solution, ctx.query, {
+    const solutionList = await ctx.service.common.getPageData(ctx.model.Solution, ctx.query, {
       withUser: true,
+      status: [true, null],
       where: { problem_id: parseInt(ctx.query.problem_id) },
       order: [
         // ['created_at', 'DESC']
@@ -71,7 +72,7 @@ class Solution extends Controller {
     });
 
     for (let i = 0; i < solutionList.list.length; i++) {
-      let x = solutionList.list[i];
+      const x = solutionList.list[i];
       x.vote_count = ctx.helper.strToIds(x.vote_ids || '').filter(x => x !== '').length;
       x.comment_count = await ctx.model.Comment.count({ where: { solution_id: x.id } })
       x.vote_ids = undefined;

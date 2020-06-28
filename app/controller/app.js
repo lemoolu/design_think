@@ -6,7 +6,8 @@ const Controller = require('egg').Controller;
 class AppController extends Controller {
   async index() {
     const { ctx } = this;
-    await ctx.render('index.ejs');
+    ctx.body = '';
+    // await ctx.render('index.ejs');
   }
 }
 

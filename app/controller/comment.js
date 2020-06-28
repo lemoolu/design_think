@@ -30,9 +30,10 @@ class Comment extends Controller {
 
     const data = await ctx.service.common.getPageData(ctx.model.Comment, ctx.query, {
       withUser: true,
+      status: [true, null],
       where: { solution_id: parseInt(ctx.query.solution_id) },
       order: [
-        // ['created_at', 'DESC']
+        ['created_at', 'DESC']
       ]
     });
 

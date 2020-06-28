@@ -24,7 +24,16 @@ module.exports = app => {
     rate: INTEGER,
     prototype_link: STRING,
     visit_count: INTEGER,
-    star_ids: { type: TEXT, defaultValue: '' },
+    star_ids: {
+      type: TEXT,
+      defaultValue: '',
+      set(val) {
+        val = val || '';
+        this.setDataValue('star_ids', val);
+        this.setDataValue('star_count', val.split(',').length);
+      }
+    },
+    star_count: INTEGER,
     created_at: {
       type: DATE,
       get() {

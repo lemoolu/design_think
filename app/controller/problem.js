@@ -2,6 +2,7 @@
 const ApiError = require('../ApiError.js');
 const Controller = require('egg').Controller;
 
+const exclude = ['status', 'verify_msg', 'deleted_at'];
 
 class ProblemController extends Controller {
   async add() {
@@ -30,7 +31,7 @@ class ProblemController extends Controller {
     ctx.body = res;
   }
 
-  async updata() {
+  async update() {
     const ctx = this.ctx;
     const data = ctx.request.body;
     const problem = await ctx.model.Problem.findById(data.id);
@@ -56,7 +57,7 @@ class ProblemController extends Controller {
     }
     const problem = _problem.get();
     problem.user_data = await ctx.model.User.findById(problem.user_id);
-    problem.star_count = ctx.helper.strToIds(problem.star_ids).length;
+
     await _problem.update({
       visit_count: problem.visit_count + 1
     }, { silent: true });
@@ -68,12 +69,12 @@ class ProblemController extends Controller {
     const ctx = this.ctx;
     const problemList = await ctx.service.common.getPageData(ctx.model.Problem, ctx.query, {
       searchKey: ['title'],
-      withUser: true,
+      status: [true],
       attributes: {
-        // exclude: ['content']
+        exclude
       },
       order: [
-        ['created_at', 'DESC']
+        ['created_at', 'DESC'], // star_count @TODO 支持根据收藏数排序
       ]
     });
 
@@ -110,7 +111,7 @@ class ProblemController extends Controller {
 
     await problem.update({
       star_ids: ctx.helper.strAddId(problem.star_ids, ctx.user.id),
-    });
+    }, { silent: true });
 
     ctx.body = '问题关注成功';
   }

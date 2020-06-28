@@ -18,7 +18,10 @@ module.exports = app => {
     },
     content: TEXT,
     visit_count: INTEGER,
-    star_ids: { type: TEXT, defaultValue: '' },
+    star_ids: {
+      type: TEXT,
+      defaultValue: '',
+    },
     image: STRING,
     created_at: {
       type: DATE,
